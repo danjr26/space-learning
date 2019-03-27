@@ -259,3 +259,6 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/SpaceQ/asteroid.gif
+/SpaceQ/output.txt
+/Performance.pyperf

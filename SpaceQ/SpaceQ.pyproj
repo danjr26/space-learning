@@ -21,7 +21,24 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="PlayerBullet.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PlayerShip.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="QLearning.py" />
+    <Compile Include="ScoreText.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SpaceAsteroid.py" />
+    <Compile Include="SpaceGame.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SpaceQ.py" />
+    <Compile Include="Specimen.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
