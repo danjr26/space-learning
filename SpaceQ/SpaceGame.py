@@ -56,8 +56,9 @@ class SpaceGame:
         for i in range(5): self.spawn_asteroid(0)
         for i in range(4): self.spawn_asteroid(1)
         for i in range(2): self.spawn_asteroid(2)
-        renderSurface = pygame.display.get_surface()
+        renderSurface = pygame.display.get_surface() if doRender else None
         t1 = time.time()
+        count = 0
         while(self.isPlaying):
             t2 = time.time()
             dt = t2 - t1
@@ -67,7 +68,8 @@ class SpaceGame:
                 dt = 0.02
 
             self.check_events()
-            self.apply_input()
+            if not self.specimen or count % 10 == 0:
+                self.apply_input()
             self.update(dt)
             self.check_collisions()
             self.spawn_asteroids(dt)
@@ -75,6 +77,7 @@ class SpaceGame:
                 self.render(renderSurface)
                 pygame.display.flip()
                 pygame.display.get_surface().fill((0, 0, 0))
+            count += 1
 
         return self.score
 

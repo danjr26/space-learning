@@ -19,7 +19,7 @@ class PlayerShip:
         self.moveDirection = pygame.Vector2(0, 0)
         self.moveSpeed = 100
         self.isShooting = False
-        self.lastShootTime = 0.0
+        self.shootAccum = 0.0
         self.shootPeriod = 0.25
 
     def update(self, dt):
@@ -27,14 +27,14 @@ class PlayerShip:
             self.moveDirection.scale_to_length(self.moveSpeed)
         self.position += self.moveDirection * dt
         SpaceGame.wrap_coords(self.position)
-        if(self.isShooting): self.fire()
+        self.shootAccum += dt
+        self.fire()
 
     def fire(self):
-        t = time.time()
-        if t < self.lastShootTime + self.shootPeriod: return False
+        if not self.isShooting or self.shootAccum < self.shootPeriod: return False
+        self.shootAccum -= self.shootPeriod
         shootDirection = pygame.Vector2(math.cos(math.radians(self.rotation)), -math.sin(math.radians(self.rotation)))
         bullet = PlayerBullet.PlayerBullet(self.game, self.position + shootDirection * self.radius, shootDirection)
-        self.lastShootTime = t;
         self.game.score -= 2
         return True
 
