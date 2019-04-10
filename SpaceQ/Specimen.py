@@ -26,7 +26,7 @@ class Specimen:
         
         self.inputLayer =  np.zeros((self.NINPUTS, self.INTERSIZE)) 
         self.interLayers = np.zeros((self.INTERSIZE, self.INTERSIZE, self.NINTER)) 
-        self.outputLayer = np.zeros((self.NOUTPUTS,  self.INTERSIZE)) 
+        self.outputLayer = np.zeros((self.INTERSIZE, self.NOUTPUTS)) 
 
         self.inputBias =   np.zeros((self.INTERSIZE))
         self.interBiases = np.zeros((self.INTERSIZE, self.NINTER))
@@ -64,7 +64,7 @@ class Specimen:
         terms = np.dot(self.inputValues, self.inputLayer) + self.inputBias
         for i in range(self.NINTER):
             terms = np.array([activation(np.dot(terms, self.interLayers[j, :, i])) for j in range(self.INTERSIZE)]) + self.interBiases[:, i]
-        self.outputValues = np.array([np.dot(terms, self.outputLayer[i, :]) for i in range(self.NOUTPUTS)]) + self.outputBias
+        self.outputValues = np.dot(terms, self.outputLayer) + self.outputBias
 
     def mutate(self):
         RATE = 1.0
@@ -79,8 +79,8 @@ class Specimen:
                 for k in range(self.NINTER):
                     if(random.random() < PROB):
                         self.interLayers[i, j, k] += random.gauss(0.0, RATE)    
-        for i in range(self.NOUTPUTS):
-            for j in range(self.INTERSIZE):
+        for i in range(self.INTERSIZE):
+            for j in range(self.NOUTPUTS):
                 if(random.random() < PROB):
                     self.outputLayer[i, j] += random.gauss(0.0, RATE)
 

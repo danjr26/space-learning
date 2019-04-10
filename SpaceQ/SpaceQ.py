@@ -73,6 +73,7 @@ if __name__ == "__main__":
                 child = copy.deepcopy(generation[i])
                 child.mutate()
                 generation.append(child)
+
             s = pool.map(get_fitness, generation)
             scores = {generation[i]:s[i] for i in range(len(generation))}
             t2 = time.time()
