@@ -32,7 +32,7 @@ class PlayerShip:
 
     def fire(self):
         if not self.isShooting or self.shootAccum < self.shootPeriod: return False
-        self.shootAccum -= self.shootPeriod
+        self.shootAccum = 0
         shootDirection = pygame.Vector2(math.cos(math.radians(self.rotation)), -math.sin(math.radians(self.rotation)))
         bullet = PlayerBullet.PlayerBullet(self.game, self.position + shootDirection * self.radius, shootDirection)
         self.game.score -= 2

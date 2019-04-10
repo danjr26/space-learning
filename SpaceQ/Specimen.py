@@ -24,26 +24,13 @@ class Specimen:
         self.NINTER = 1
         self.INTERSIZE = 15
         
-        self.inputLayer =  np.zeros((self.INTERSIZE, self.NINPUTS)) 
+        self.inputLayer =  np.zeros((self.NINPUTS, self.INTERSIZE)) 
         self.interLayers = np.zeros((self.INTERSIZE, self.INTERSIZE, self.NINTER)) 
         self.outputLayer = np.zeros((self.NOUTPUTS,  self.INTERSIZE)) 
+
         self.inputBias =   np.zeros((self.INTERSIZE))
         self.interBiases = np.zeros((self.INTERSIZE, self.NINTER))
         self.outputBias =  np.zeros((self.NOUTPUTS))
-
-        #rate = 1.0
-        #for i in range(self.INTERSIZE):
-        #    for j in range(self.NINPUTS):
-        #        self.inputLayer[i, j] = random.gauss(0.0, rate)
-
-        #for i in range(self.INTERSIZE):
-        #    for j in range(self.INTERSIZE):
-        #        for k in range(self.NINTER):
-        #            self.interLayers[i, j, k] = random.gauss(0.0, rate)
-
-        #for i in range(self.NOUTPUTS):
-        #    for j in range(self.INTERSIZE):
-        #        self.outputLayer[i, j] = random.gauss(0.0, rate)
 
         self.inputValues =  np.zeros((self.NINPUTS))
         self.outputValues = np.zeros((self.NOUTPUTS))
@@ -54,7 +41,7 @@ class Specimen:
             "inputLayer": self.inputLayer.tolist(),
             "interLayers": self.interLayers.tolist(),
             "outputLayer": self.outputLayer.tolist(),
-            "inputBias": self.outputBias.tolist(),
+            "inputBias": self.inputBias.tolist(),
             "interBiases": self.interBiases.tolist(),
             "outputBias": self.outputBias.tolist()
         }, fs)
@@ -69,10 +56,12 @@ class Specimen:
         self.inputBias = np.array(data["inputBias"])
         self.interBiases = np.array(data["interBiases"])
         self.outputBias = np.array(data["outputBias"])
+        print(self.inputLayer.shape, self.interLayers.shape, self.outputLayer.shape)
+        print(self.inputBias.shape, self.interBiases.shape, self.outputBias.shape)
         fs.close()
 
     def evaluate(self):
-        terms = np.array([activation(np.dot(self.inputValues, self.inputLayer[i, :])) for i in range(self.INTERSIZE)]) + self.inputBias
+        terms = np.dot(self.inputValues, self.inputLayer) + self.inputBias
         for i in range(self.NINTER):
             terms = np.array([activation(np.dot(terms, self.interLayers[j, :, i])) for j in range(self.INTERSIZE)]) + self.interBiases[:, i]
         self.outputValues = np.array([np.dot(terms, self.outputLayer[i, :]) for i in range(self.NOUTPUTS)]) + self.outputBias
@@ -81,8 +70,8 @@ class Specimen:
         RATE = 1.0
         PROB = 0.05
 
-        for i in range(self.INTERSIZE):
-            for j in range(self.NINPUTS):
+        for i in range(self.NINPUTS):
+            for j in range(self.INTERSIZE):
                 if(random.random() < PROB):
                     self.inputLayer[i, j] += random.gauss(0.0, RATE)
         for i in range(self.INTERSIZE):

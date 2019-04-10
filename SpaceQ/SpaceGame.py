@@ -49,6 +49,7 @@ class SpaceGame:
         self.playTime = 0.0
         self.tAccum = 0.0
         self.spawnAccum = 0.0
+        #random.seed(10)
 
     def run(self, specimen=None, doRender=True):
         self.specimen = specimen
@@ -64,7 +65,7 @@ class SpaceGame:
             dt = t2 - t1
             t1 = t2
 
-            if self.specimen:
+            if self.specimen and not doRender:
                 dt = 0.02
 
             self.check_events()
