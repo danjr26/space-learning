@@ -25,9 +25,6 @@ def get_user_move_direction(ship):
 def get_user_shoot(ship):
     return pygame.key.get_pressed()[K_SPACE]
 
-def circles_collide(pos1:pygame.Vector2, radius1, pos2:pygame.Vector2, radius2):
-    return pos1.distance_squared_to(pos2) <= (radius1 + radius2)**2
-
 def wrap_coords(point):
     dim = (800, 800)
     while point.x < 0: point.x += dim[0]
@@ -66,10 +63,11 @@ class SpaceGame:
             t1 = t2
 
             if self.specimen and not doRender:
-                dt = 0.02
+                dt = 0.05
 
-            self.check_events()
-            if not self.specimen or count % 10 == 0:
+            if doRender:
+                self.check_events()
+            if not self.specimen or count % 4 == 0:
                 self.apply_input()
             self.update(dt)
             self.check_collisions()
@@ -114,10 +112,10 @@ class SpaceGame:
         toHit = set()
         for asteroid in self.asteroids:
             for playerBullet in self.playerBullets:
-                if circles_collide(asteroid.position, asteroid.radius, playerBullet.position, playerBullet.radius):
+                if asteroid.position.distance_squared_to(playerBullet.position) <= (asteroid.radius + playerBullet.radius)**2:
                     toHit.add(asteroid)
                     toHit.add(playerBullet)
-            if circles_collide(asteroid.position, asteroid.radius, self.playerShip.position, self.playerShip.radius):
+            if asteroid.position.distance_squared_to(self.playerShip.position) <= (asteroid.radius + self.playerShip.radius)**2:
                 toHit.add(self.playerShip)
         for thing in toHit:
             thing.get_hit()

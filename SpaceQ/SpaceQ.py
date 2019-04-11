@@ -9,7 +9,6 @@ def get_fitness(specimen):
 
 if __name__ == "__main__":
     pygame.init()
-    pygame.display.set_mode((800, 800))
 
     args = sys.argv[1:]
 
@@ -48,6 +47,9 @@ if __name__ == "__main__":
         else:
             exit(-1)
 
+    if doDisplay: 
+        pygame.display.set_mode((800, 800))
+
     if mode == "learn":
         pool = multiprocessing.Pool(nThreads)
 
@@ -57,29 +59,35 @@ if __name__ == "__main__":
             for specimen in generation:
                 specimen.load(loadFile)
         s = pool.map(get_fitness, generation)
+        #s = [get_fitness(specimen) for specimen in generation]
         scores = {generation[i]:s[i] for i in range(len(generation))}
         count = 0
-        while True:
-            generation = sorted(scores, key=lambda k:scores[k], reverse=True)[0:halfSize-1]
+        try:
+            while True:
+                generation = sorted(scores, key=lambda k:scores[k], reverse=True)[0:halfSize-1]
 
-            if doDisplay and count % displayMod == 0:
-                generation[0].calc_fitness(doRender=True)
+                if doDisplay and count % displayMod == 0:
+                    generation[0].calc_fitness(doRender=True)
 
-            if saveBest:
-                generation[0].save(saveFile)
+                if saveBest:
+                    generation[0].save(saveFile)
 
-            t1 = time.time()
-            for i in range(genSize//2):
-                child = copy.deepcopy(generation[i])
-                child.mutate()
-                generation.append(child)
+                t1 = time.time()
+                for i in range(genSize//2):
+                    child = copy.deepcopy(generation[i])
+                    child.mutate()
+                    generation.append(child)
 
-            s = pool.map(get_fitness, generation)
-            scores = {generation[i]:s[i] for i in range(len(generation))}
-            t2 = time.time()
+                s = pool.map(get_fitness, generation)
+                #s = [get_fitness(specimen) for specimen in generation]
+                scores = {generation[i]:s[i] for i in range(len(generation))}
+                t2 = time.time()
 
-            print(count, max(sorted(scores.values(), reverse=True)), sum(sorted(scores.values(), reverse=True)[0:halfSize]) / halfSize, round(t2-t1, 2), sep=", ")
-            count += 1
+                print(count, max(sorted(scores.values(), reverse=True)), sum(sorted(scores.values(), reverse=True)[0:halfSize]) / halfSize, round(t2-t1, 2), sep=", ")
+                count += 1
+        except KeyboardInterrupt:
+            exit()
+
 
     elif mode == "playback":
         specimen = Specimen()
